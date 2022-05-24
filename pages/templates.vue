@@ -20,7 +20,7 @@
               <el-option
                 class="text-dark"
                 value="numberchart"
-                label="Graficador"
+                label="Grafico Datos"
               >
               </el-option>
               <!--
@@ -51,11 +51,11 @@
                 value="rtinfo"
                 label="RT Info INPUT <-"
               ></el-option> -->
-              <el-option
+              <!-- <el-option
                 class="text-dark"
                 value="mapa"
                 label="Mapa"
-              ></el-option>
+              ></el-option> -->
 
               <el-option
                 class="text-dark"
@@ -1335,7 +1335,7 @@ export default {
 
       try {
         const res = await this.$axios.get("/template", axiosHeaders);
-        console.log(res.data);
+        //console.log(res.data);//DEBUGEO TEMPLATES
 
         if (res.data.status == "success") {
           this.templates = res.data.data;
@@ -1359,7 +1359,7 @@ export default {
         }
       };
 
-      console.log(axiosHeaders);
+      //console.log(axiosHeaders);//DEBUGEO TOKEN ANTES DE ENVIAR
 
       const toSend = {
         template: {
@@ -1424,12 +1424,12 @@ export default {
         }
       };
 
-      console.log(axiosHeaders);
+      //console.log(axiosHeaders);//DEBUGEO 
 
       try {
         const res = await this.$axios.delete("/template", axiosHeaders);
 
-        console.log(res.data);
+        //console.log(res.data);//DEBUGEO TEMPLATES
 
         if (res.data.status == "fail" && res.data.error == "template in use") {
           this.$notify({

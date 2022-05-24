@@ -3,50 +3,34 @@
     <template slot="header">
       <h5 class="card-category" style="font-size: 20px;">
         {{ config.selectedDevice.name }} - {{ config.variableFullName }}
+        <div class="pull-right">
+          <el-tooltip
+            content="Cambiar tipo de mapa"
+            :open-delay="300"
+            placement="top"
+          >
+            <base-button
+              @click.native="mapstyle()"
+              class="remove btn-link"
+              type="warning"
+              size="sm"
+              icon
+            >
+              <i class="fas fa-layer-group"></i>
+            </base-button>
+          </el-tooltip>
+        </div>
       </h5>
       <h3 class="card-title"></h3>
 
-      <!-- $$$$$$$$$$$$$$$$ MAPA-TRACKING $$$$$$$$$$$$$$$$$$$$$$ -->
-      <div>
-        <base-button type="success" size="sm" @click="mapDefault()"
-          >Normal</base-button
-        >
-        <base-button type="danger" size="sm" @click="mapWhite()"
-          >Blanco</base-button
-        >
-        <!-- <base-button type="primary" size="sm" @click="mapBlack()"
-          >Oscuro</base-button
-        > -->
-        <base-button type="warning" size="sm" @click="mapSatelit()"
-          >Satelital</base-button
-        >
-      </div>
       <div id="map-wrap" style="height:450px; width:100%;">
         <l-map :zoom="zoom" :center="center">
           <l-tile-layer :url="url"></l-tile-layer>
           <l-control-attribution
             position="topright"
             prefix="SISTEMA DE RASTREO TELKINGS"
-          ></l-control-attribution>
-          <l-control position="bottomleft">
-            <base-button type="warning" size="sm" @click="clickUltimatePosition"
-              >🌎Ultimas Ubicaciones 🌎📌</base-button
-            >
-          </l-control>
-          <l-control position="bottomleft">
-            <base-button type="primary" size="sm" @click="ubicatePosition"
-              >Ubicacion Dispositivo📍</base-button
-            >
-          </l-control>
-
-          <l-control position="bottomleft">
-            <base-button
-              type="primary"
-              size="sm"
-              @click.native="showSwal('auto-close')"
-              >Ventana Modal
-            </base-button>
-          </l-control>
+          ></l-control-attribution> 
+          
           <l-marker
             :draggable="false"
             :lat-lng="getCoord(item.lat, item.lng)"
@@ -57,13 +41,29 @@
             <l-icon :icon-url="icon" :icon-size="iconSize" />
             <l-popup>
               Fecha: {{ item.time }} <br />
-              Dispositivo N°: {{ item.dId }}
+              Dispositivo N°: {{ item.dId }} <br />
+              Ver en Google Maps 
+              <el-tooltip
+                content="Google Maps"
+                :open-delay="300"
+                placement="top"
+              >
+                <base-button
+                 @click.native="googleMaps(item)"
+                 class="edit btn-link"
+                 type="warning"
+                 size="sm"
+                 icon
+                 >
+                  <i class="fas fa-map-marker-alt"></i>
+                </base-button>
+              </el-tooltip>
             </l-popup>
           </l-marker>
           <l-marker :draggable="false" :lat-lng="ultim">
             <l-icon :icon-url="icon" :icon-size="iconSize" />
             <l-tooltip>
-              Ultima posicion📍Registrada
+              Ubicacion Actual
             </l-tooltip>
           </l-marker>
           <l-circle
@@ -82,7 +82,29 @@
           </l-layer-group>
         </l-map>
       </div>
-      <!-- $$$$$$$$$$$$$$$$ MAPA-TRACKING $$$$$$$$$$$$$$$$$$$$$$ -->
+      <br />
+      <div>
+        <!-- <base-button
+          type="warning"
+          size="sm"
+          @click.native="showSwal('gps-on')"
+          v-if="this.gps == false"
+          >Activar GPS
+        </base-button>
+        <base-button
+          type="warning"
+          size="sm"
+          @click.native="showSwal('gps-off')"
+          v-if="this.gps == true"
+          >Desactivar GPS
+        </base-button> -->
+
+        <base-button type="warning" size="sm" @click="clickUltimatePosition"
+          >Historial Ubicaciones📍</base-button
+          >
+            <!-- <base-button type="primary" size="sm" @click="ubicatePosition"
+              >Ubicacion Dispositivo📍</base-button> -->
+      </div>
       <br />
     </template>
   </card>
@@ -152,9 +174,14 @@ export default {
       positionDevices: [],
       routesLines: [],
       ultim: { lat: 0, lng: 0 },
-      circle: { radius: 3500, color: "red", opacity: 0.1 },
+      circle: { radius: 4500, color: "red", opacity: 0.2 },
       renderUbications: false,
-      position: []
+      position: [],
+      watchId: "",
+      gps: false,
+      lastlatitude: "",
+      lastlongitude: "",
+      mapselected: 0
     };
   },
   watch: {
@@ -170,19 +197,120 @@ export default {
     }
   },
   mounted() {
-    this.tracking();
+    this.ubicatePosition();
+    //userId/dId/uniquestr/sdata
+    const topic =
+      this.config.userId +
+      "/" +
+      this.config.selectedDevice.dId +
+      "/" +
+      this.config.variable +
+      "/sdata";
+    //console.log(topic);
+    this.$nuxt.$on(topic, this.processReceivedData);
+  },
+  beforeDestroy() {
+    this.$nuxt.$off(
+      this.config.userId +
+        "/" +
+        this.config.selectedDevice.dId +
+        "/" +
+        this.config.variable +
+        "/sdata"
+    );
   },
   methods: {
+    processReceivedData(data) {
+      console.log("receiving location");
+      //console.log(data);
+      this.ultim = data;
+      this.center = this.ultim;
+      this.circle.center = this.ultim;
+    },
+    //////////////////////////////////////////////////////
+
+    geolocation(position) {
+      const { latitude, longitude } = position.coords;
+      console.log(position.coords);
+      console.log("latitud: " + latitude);
+      console.log("longitud: " + longitude);
+
+      if (this.lastlatitude != latitude) {
+        if (this.lastlongitude != longitude) {
+          this.lastlongitude = longitude;
+          this.lastlatitude = latitude;
+
+          const toSend = {
+            topic:
+              this.config.userId +
+              "/" +
+              this.config.selectedDevice.dId +
+              "/" +
+              this.config.variable +
+              "/sdata",
+            msg: {
+              lat: latitude,
+              lng: longitude,
+              value: 1,
+              save: 1
+            }
+          };
+
+          $nuxt.$emit("mqtt-sender", toSend);
+        }
+      }
+    },
+    handleError(error) {
+      const { code } = error;
+      switch (code) {
+        case GeolocationPositionError.TIMEOUT:
+          // Handle timeout.
+          break;
+        case GeolocationPositionError.PERMISSION_DENIED:
+          console.log("Permiso denegado");
+          // User denied the request.
+          break;
+        case GeolocationPositionError.POSITION_UNAVAILABLE:
+          console.log("Posición no disponible");
+          // Position not available.
+          break;
+      }
+    },
+    startGeolocation() {
+      if (navigator.geolocation) {
+        const geo_options = {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 5000
+        };
+
+        this.watchId = navigator.geolocation.watchPosition(
+          this.geolocation,
+          this.handleError,
+          geo_options
+        );
+      }
+    },
+    stopGeolocation() {
+      navigator.geolocation.clearWatch(this.watchId);
+    },
+
+    ////////////////////////////////////////////////////////////////////////////
     getCoord(a, b) {
       return latLng(a, b);
+    },
+    mapstyle() {
+      if (this.mapselected == 0) {
+        this.mapSatelit();
+        this.mapselected = 1;
+      } else if (this.mapselected == 1) {
+        this.mapDefault();
+        this.mapselected = 0;
+      }
     },
     mapDefault() {
       this.url = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
     },
-    // mapBlack() {
-    //   this.url =
-    //     "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png";
-    // },
     mapWhite() {
       this.url =
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
@@ -191,23 +319,29 @@ export default {
       this.url =
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
     },
-    clickUltimatePosition() {
+    async clickUltimatePosition() {
+      await this.tracking();
       this.renderUbications = true;
+      this.center = this.ultim;
+      this.circle.center = this.ultim;
       this.$notify({
         type: "success",
         icon: "tim-icons icon-check-2",
         message: "Ultimas ubicaciones del dispositivo"
       });
     },
-    ubicatePosition() {
-      this.tracking();
-      this.center = this.ultim;
-      this.circle.center = this.ultim;
-      this.$notify({
-        type: "success",
-        icon: "tim-icons icon-check-2",
-        message: "Obteniendo mi ubicacion exitosamente!!"
-      });
+    async ubicatePosition() {
+      await this.tracking();
+      if (this.ultim.lat != "0" && this.ultim.lng != "0") {
+        this.center = this.ultim;
+        this.circle.center = this.ultim;
+
+        this.$notify({
+          type: "success",
+          icon: "tim-icons icon-check-2",
+          message: " Obteniendo mi Ubicación Actual exitosamente!!"
+        });
+      }
     },
     async tracking() {
       const axiosHeaders = {
@@ -260,38 +394,32 @@ export default {
         time;
 
       // ie: 2013-02-18, 8:35 AM
-      time = dd + "/" + mm + "/" + yyyy + " - " + hh + ":" + min + ":" + seg;
+      time =  hh + ":" + min + ":" + seg + " - "+ dd + "/" + mm + "/" + yyyy ;
 
       return time;
     },
     showSwal(type) {
-      if (type === "warning-message-and-confirmation") {
+      if (type === "gps-on") {
         swal({
-          title: "Estas seguro ?",
-          text: `No podrás revertir esto!`,
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn btn-success btn-fill",
-          cancelButtonClass: "btn btn-danger btn-fill",
-          confirmButtonText: "Si, bórralo!",
-          buttonsStyling: false
-        }).then(() => {
-          swal({
-            title: "borrado!",
-            text: "ha sido eliminado.",
-            type: "success",
-            confirmButtonClass: "btn btn-success btn-fill",
-            buttonsStyling: false
-          });
-        });
-      } else if (type === "auto-close") {
-        swal({
-          title: "CIERRE AUTOMATICO!",
-          text: "Se cerrara en 3 segundos!!.",
-          timer: 3000,
+          title: "GPS ACTIVADO",
+          timer: 500,
           showConfirmButton: false
         });
+        this.gps = true;
+        //this.startGeolocation();
+      } else if (type === "gps-off") {
+        swal({
+          title: "GPS DESACTIVADO",
+          timer: 500,
+          showConfirmButton: false
+        });
+        this.gps = false;
+        //this.stopGeolocation();
       }
+    },
+    googleMaps(incoming){
+       console.log("parametros item mapa" + 
+       JSON.stringify(incoming))
     }
   }
 };

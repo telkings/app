@@ -5,8 +5,8 @@
         <i class="fa fa-cog fa-2x" @click="toggleDropDown"> </i>
       </a>
       <ul class="dropdown-menu" :class="{ show: isOpen }">
-        <li class="header-title">Sidebar Background</li>
-        <li class="adjustments-line">
+        <li class="header-title">Fondo de Pantalla</li>
+        <!-- <li class="adjustments-line">
           <a class="switch-trigger background-color">
             <div class="badge-colors text-center">
               <span
@@ -20,27 +20,27 @@
             </div>
             <div class="clearfix"></div>
           </a>
-        </li>
+        </li> -->
 
-        <li class="header-title">Sidebar Mini</li>
+        <!-- <li class="header-title">Sidebar Mini</li> -->
         <li class="adjustments-line">
           <div class="togglebutton switch-change-color mt-3">
-            <span class="label-switch">LIGHT MODE</span>
+            <span class="label-switch">MODO BLANCO</span>
             <base-switch v-model="darkMode" @input="toggleMode"></base-switch>
-            <span class="label-switch label-right">DARK MODE</span>
+            <span class="label-switch label-right">MODO OSCURO</span>
           </div>
         </li>
 
         <li class="button-container mt-4">
           <a
-            href="https://www.creative-tim.com/learning-lab/nuxt/overview/black-dashboard"
+            href="http://telkings.com"
             target="_blank"
             rel="noopener"
             class="btn btn-default btn-block btn-round"
           >
-            Documentation
+            TELKINGS.COM
           </a>
-          <a
+          <!-- <a
             href="https://creative-tim.com/product/nuxt-black-dashboard"
             target="_blank"
             rel="noopener"
@@ -55,7 +55,7 @@
             class="btn btn-info btn-block btn-round"
           >
             Upgrade to PRO
-          </a>
+          </a> -->
         </li>
       </ul>
     </div>

@@ -184,9 +184,9 @@ export default {
 
     geolocation(position) {
       const { latitude, longitude } = position.coords;
-      console.log(position.coords);
-      console.log("latitud: " + latitude);
-      console.log("longitud: " + longitude);
+     // console.log(position.coords);//DEBUGEO
+     // console.log("latitud: " + latitude);//DEBUGEO
+     // console.log("longitud: " + longitude);//DEBUGEO
     },
     handleError(error) {
       const { code } = error;
@@ -195,11 +195,11 @@ export default {
           // Handle timeout.
           break;
         case GeolocationPositionError.PERMISSION_DENIED:
-          console.log("Permiso denegado");
+          //console.log("Permiso denegado");//DEBUGEO
           // User denied the request.
           break;
         case GeolocationPositionError.POSITION_UNAVAILABLE:
-          console.log("Posición no disponible");
+          //console.log("Posición no disponible");//DEBUGEO
           // Position not available.
           break;
       }
@@ -255,7 +255,7 @@ export default {
       this.$axios
         .post("/new-message", toSend, axiosHeaders)
         .then(res => {
-          console.log("mensaje enviado");
+          //console.log("mensaje enviado");//DEBUGEO
         })
         .catch(e => {
           console.log(e);
@@ -269,13 +269,13 @@ export default {
       this.pushNotif = false;
     },
     unsubscribe() {
-      console.log("unsuscribe notif push");
+      //console.log("unsuscribe notif push");//DEBUGEO
 
       this.registersw.pushManager.getSubscription().then(subs => {
         subs.unsubscribe().then(() => {
-          console.log("Unsubscribed", subs.endpoint);
+          //console.log("Unsubscribed", subs.endpoint);//DEBUGEO
           this.setSubscribeButton();
-          console.log(subs);
+          //console.log(subs);//DEBUGEO
           const axiosHeaders = {
             headers: {
               token: this.$store.state.auth.token
@@ -295,7 +295,7 @@ export default {
       });
     },
     async subscribe() {
-      console.log("Suscribiendo...");
+     // console.log("Suscribiendo...");//DEBUGEO
 
       const axiosHeaders = {
         headers: {
@@ -307,18 +307,18 @@ export default {
         .get("/key", axiosHeaders)
         .then(async res => {
           // Listen Push Notifications
-          console.log("Listening Push Notifications");
+          //console.log("Listening Push Notifications");//DEBUGEO
           const subscription = await this.registersw.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: this.urlBase64ToUint8Array(res.data)
           });
 
-          console.log(subscription);
+          //console.log(subscription);//DEBUGEO
 
           this.$axios
             .post("/subscription", subscription, axiosHeaders)
             .then(async res => {
-              console.log("Subscribed!");
+             // console.log("Subscribed!");//DEBUGEO
             })
             .then(this.setUnsubscribeButton)
             .catch(e => {
@@ -333,9 +333,9 @@ export default {
         });
     },
     async verificasubscription() {
-      console.log("VERIFICANDO SUSCRIPCIONES DE SW...");
+      //console.log("VERIFICANDO SUSCRIPCIONES DE SW...");//DEBUGEO
       // Service Worker
-      console.log("Registering a Service worker...");
+      //console.log("Registering a Service worker...");//DEBUGEO
       this.registersw = await navigator.serviceWorker.register(
         "/custom-sw.js",
         {
@@ -345,13 +345,13 @@ export default {
 
       navigator.serviceWorker.ready
         .then(function(registration) {
-          console.log("service worker registered!!");
+          //console.log("service worker registered!!");//DEBUGEO
 
           return registration.pushManager.getSubscription();
         })
         .then(subscription => {
           if (subscription) {
-            console.log("Already subscribed", subscription.endpoint);
+            //console.log("Already subscribed", subscription.endpoint);//DEBUGEO
             this.setUnsubscribeButton();
           } else {
             this.setSubscribeButton();
@@ -374,7 +374,7 @@ export default {
     },
     sw() {
       if ("serviceWorker" in navigator) {
-        console.log("SW DISPONIBLE EN EL NAVEGADOR PARA SER REGISTRADO");
+        //console.log("SW DISPONIBLE EN EL NAVEGADOR PARA SER REGISTRADO");//DEBUGEO
         this.pushNotif = false;
         this.verificasubscription().catch(err => console.log(err));
       }
@@ -394,7 +394,7 @@ export default {
         .put("/lock", toSend, axiosHeaders)
         .then(res => {
           if (res.data.status == "success") {
-            console.log(res.data);
+            //console.log(res.data);//DEBUGEO
 
             const auth = {
               token: res.data.token,

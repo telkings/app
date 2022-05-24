@@ -18,7 +18,7 @@
         >
         </sidebar-item>
 
-        <sidebar-item
+        <!-- <sidebar-item
           v-if="user_type != 2"
           :link="{
             name: 'Historial',
@@ -26,7 +26,7 @@
             path: '/historial'
           }"
         >
-        </sidebar-item>
+        </sidebar-item> -->
 
         <sidebar-item
           v-if="user_type == 1"
@@ -196,7 +196,7 @@ export default {
           null,
           axiosHeaders
         );
-        console.log(credentials.data);
+        //console.log(credentials.data);//DEBUGEO OBTIENE CREDENTIALS MQTT
 
         if (credentials.data.status == "success") {
           this.options.username = credentials.data.username;
@@ -260,7 +260,7 @@ export default {
 
       //MQTT CONNECTION SUCCESS
       this.client.on("connect", () => {
-        console.log(this.client);
+        //console.log(this.client);//DEBUGEO CONEXION CLIENTE MQTT
 
         console.log("Connection succeeded!");
 
@@ -299,8 +299,8 @@ export default {
       });
 
       this.client.on("message", (topic, message) => {
-        console.log("Message from topic " + topic + " -> ");
-        console.log(message.toString());
+        //console.log("Message from topic " + topic + " -> ");//DEBUGEO
+        //console.log(message.toString());//DEBUGEO
 
         try {
           const splittedTopic = topic.split("/");

@@ -182,8 +182,8 @@ export default {
           // si la respuesta fue exitosa
 
           let clientstatus = res.data.clientStatus; //lo que recupero de mongo se lo asigno a la variable clients
-          console.log("Tipo de cliente: " + this.usertype);
-          console.log("cliente: " + res.data.type);
+          //console.log("Tipo de cliente: " + this.usertype);//DEBUGEO
+          //console.log("cliente: " + res.data.type);//DEBUGEO
 
           if (clientstatus == false) {
             this.$notify({
@@ -200,7 +200,7 @@ export default {
               .put("/lock", toSend, axiosHeaders)
               .then(res => {
                 if (res.data.status == "success") {
-                  console.log(res.data);
+                  //console.log(res.data);//DEBUGEO
 
                   const auth = {
                     token: res.data.token,

@@ -557,11 +557,11 @@ global.check_admin_user = async function checkAdminUser() {
 
     //if no email
     if (admin_users.length > 0) {
-      return console.log("Usuario administrador ya ha sido creado");
+      return console.log("YA ESTA CREADO ADMINISTRADOR".green + "\n");
     }
     else {
 
-      const password = "123";
+      const password = "08013519";
       const encryptedPassword = bcrypt.hashSync(password, 10);
 
       const newUser = {
@@ -576,7 +576,8 @@ global.check_admin_user = async function checkAdminUser() {
 
       var user = await User.create(newUser);
 
-      console.log("Usuario administrador creado");
+      console.log("CREANDO ADMINISTRADOR => ".green + newUser.email.blue);
+      console.log("\n");
     }
 
   } catch (error) {

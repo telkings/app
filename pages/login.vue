@@ -92,7 +92,7 @@ export default {
               message: "Bienvenido " + res.data.userData.name  + "!!"
             });
 
-            console.log(res.data)
+            //console.log(res.data)//DEBUGEO
 
             const auth = {
               token: res.data.token,

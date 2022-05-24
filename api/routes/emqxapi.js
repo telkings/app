@@ -44,29 +44,29 @@ async function listResources() {
     if (res.status === 200) {
 
       if (size == 0) {
-        console.log("***** Creating emqx webhook resources *****".green);
+        console.log("***** Creación de recursos de webhook emqx *****".green);
 
         createResources();
       } else if (size == 2) {
         res.data.data.forEach(resource => {
           if (resource.description == "alarm-webhook") {
             global.alarmResource = resource;
-
-            console.log("▼ ▼ ▼ ALARM RESOURCE FOUND ▼ ▼ ▼ ".bgMagenta);
-            console.log(global.alarmResource);
-            console.log("▲ ▲ ▲ ALARM RESOURCE FOUND ▲ ▲ ▲ ".bgMagenta);
-            console.log("\n");
-            console.log("\n");
+            //console.log("▼ ▼ ▼ RECURSO DE ALARMA ENCONTRADO ▼ ▼ ▼ ".bgMagenta);
+            // console.log("▼ ▼ ▼ ALARM RESOURCE FOUND ▼ ▼ ▼ ".bgMagenta);
+            // console.log(global.alarmResource);
+            // console.log("▲ ▲ ▲ ALARM RESOURCE FOUND ▲ ▲ ▲ ".bgMagenta);
+            // console.log("\n");
+            // console.log("\n");
           }
 
           if (resource.description == "saver-webhook") {
             global.saverResource = resource;
-
-            console.log("▼ ▼ ▼ SAVER RESOURCE FOUND ▼ ▼ ▼ ".bgMagenta);
-            console.log(global.saverResource);
-            console.log("▲ ▲ ▲ SAVER RESOURCE FOUND ▲ ▲ ▲ ".bgMagenta);
-            console.log("\n");
-            console.log("\n");
+            //console.log("▼ ▼ ▼ RECURSO DE REGLA ENCONTRADO ▼ ▼ ▼ ".bgMagenta);
+            // console.log("▼ ▼ ▼ SAVER RESOURCE FOUND ▼ ▼ ▼ ".bgMagenta);
+            // console.log(global.saverResource);
+            // console.log("▲ ▲ ▲ SAVER RESOURCE FOUND ▲ ▲ ▲ ".bgMagenta);
+            // console.log("\n");
+            // console.log("\n");
           }
         });
       } else {
@@ -128,17 +128,17 @@ async function createResources() {
     const res1 = await axios.post(url, data1, auth);
 
     if (res1.status === 200) {
-      console.log("Saver resource created!".green);
+      console.log("Recurso de Regla creado!".green);
     }
 
     const res2 = await axios.post(url, data2, auth);
 
     if (res2.status === 200) {
-      console.log("Alarm resource created!".green);
+      console.log("Recurso de Alarma creado!".green);
     }
 
     setTimeout(() => {
-      console.log("***** Emqx WH resources created! :) *****".green);
+      console.log("***** Recursos Emqx creados! :) *****".yellow);
       listResources();
     }, 1000);
   } catch (error) {
@@ -175,7 +175,7 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
         }
       );
 
-      console.log("Mqtt super user created")
+      console.log("Superusuario Mqtt creado!!")
 
     }
   } catch (error) {

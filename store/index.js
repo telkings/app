@@ -48,7 +48,7 @@ export const actions = {
 
     this.$axios.get("/device", axiosHeader)
     .then(res => {
-      console.log(res.data.data);
+      console.log("Store Devices "+res.data.data);
 
       res.data.data.forEach((device, index) => {
         if (device.selected){
@@ -82,7 +82,7 @@ export const actions = {
 
     this.$axios.get("/notifications", axiosHeader)
     .then(res => {
-      console.log(res.data.data);
+      console.log("Store Notification "+res.data.data);
       this.commit("setNotifications", res.data.data)
     }).catch(error => {
       console.log(error);

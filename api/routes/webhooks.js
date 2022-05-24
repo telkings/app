@@ -294,17 +294,17 @@ function startMqttClient() {
   client = mqtt.connect("mqtt://" + process.env.EMQX_API_HOST, options);
 
   client.on("connect", function () {
-    console.log("MQTT CONNECTION -> SUCCESS;".green);
+    console.log("CONEXIÓN MQTT -> ÉXITOSA".green);
     console.log("\n");
   });
 
   client.on("reconnect", error => {
-    console.log("RECONNECTING MQTT");
+    console.log("RECONECTANDO MQTT");
     console.log(error);
   });
 
   client.on("error", error => {
-    console.log("MQTT CONNECIONT FAIL -> ");
+    console.log("FALLO DE CONEXIÓN MQTT -> ");
     console.log(error);
   });
 }

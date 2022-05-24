@@ -7,7 +7,7 @@
             border-radius: 50%;
             margin-top: -60px;
             box-shadow: $box-shadow-raised;" 
-        slot="header" src="img//emilyz.jpg" alt="..." />
+        slot="header" src="https://cdn2.iconfinder.com/data/icons/users-2/512/User_6-1024.png" alt="..." />
 
         <h4 class="card-title-text">{{$store.state.auth.userData.name.toUpperCase()}}</h4>
         <base-input

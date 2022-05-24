@@ -50,13 +50,13 @@ router.post("/subscription", checkAuth, async (req, res) => {
         await Notifpush.create(newpushnotif);
 
         console.log("Nuevo cliente agregado para notificaciones push");
-        console.log('Subscription registered ' + pushSubscripton.endpoint);
+       // console.log('Subscription registered ' + pushSubscripton.endpoint);
     }
     else {
         console.log("Actualizando suscripción del cliente...");
         await Notifpush.updateOne({ userId: userId }, { subscription: JSON.stringify(pushSubscripton) });
         console.log("Suscripción actualizada");
-        console.log('Subscription registered ' + pushSubscripton.endpoint);
+       // console.log('Subscription registered ' + pushSubscripton.endpoint);
     }
 
     // Server's Response
@@ -69,7 +69,7 @@ router.post("/unsubscription", checkAuth, async (req, res) => {
 
     await Notifpush.deleteOne({ userId: userId });
 
-    console.log('Subscription unregistered ' + pushSubscripton.endpoint);
+   // console.log('Subscription unregistered ' + pushSubscripton.endpoint);
 
     // Server's Response
     res.status(201).json();
